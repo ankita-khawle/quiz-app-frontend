@@ -1,3 +1,18 @@
+#Code
+The code structure can be found in the master branch.
+
+Running command 
+1. clone the repo
+2. npm i
+3. npm start
+
+Testing command 
+1. clone the repo
+2. npm i
+3. npm test
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
