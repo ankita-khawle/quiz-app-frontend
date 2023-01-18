@@ -46,21 +46,24 @@ const LayoutWrapper = (props) => {
     })
   }
   const next = () => {
-    let str = sha1(form.getFieldValue('answer').toLowerCase())
-    if (questionList[current].answerSha1 === str) {
-      setCurrent(current + 1)
-      setScore(score + 1)
-      form.setFieldValue('answer', null)
-    } else {
-      if (attempts === 1) {
-        openNotificationRestart()
-        setAttempts(0)
-        setDone(true)
+    if(form.getFieldValue('answer')) {
+      let str = sha1(form.getFieldValue('answer').toLowerCase())
+      if (questionList[current].answerSha1 === str) {
+        setCurrent(current + 1)
+        setScore(score + 1)
+        form.setFieldValue('answer', null)
       } else {
-        openNotification()
-        setAttempts(attempts - 1)
+        if (attempts === 1) {
+          openNotificationRestart()
+          setAttempts(0)
+          setDone(true)
+        } else {
+          openNotification()
+          setAttempts(attempts - 1)
+        }
       }
-    }
+    } 
+
   }
   const resetQuiz = () => {
     dispatch(getQuestions())
@@ -158,7 +161,7 @@ const LayoutWrapper = (props) => {
                   <Card className="contentStyle">
                     <p>Question: {current + 1}</p>
                     <p>{questionList[current].question}</p>
-                    <Form form={form}>
+                    <Form form={form} validateTrigger={["onChange"]}>
                       <Form.Item
                         name="answer"
                         label="Answer"
@@ -173,10 +176,9 @@ const LayoutWrapper = (props) => {
                       </Form.Item>
                     </Form>
                   </Card>
-
                   <div className="btnBlockStyle">
                     {current < questionList.length - 1 && (
-                      <Button type="primary" onClick={() => next()}>
+                      <Button type="primary"  onClick={() => next()}>
                         Next
                       </Button>
                     )}
