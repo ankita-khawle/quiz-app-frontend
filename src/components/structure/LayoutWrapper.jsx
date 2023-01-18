@@ -62,7 +62,9 @@ const LayoutWrapper = (props) => {
           setAttempts(attempts - 1)
         }
       }
-    } 
+    } else {
+      form.validateFields(['answer'])
+    }
 
   }
   const resetQuiz = () => {
@@ -161,7 +163,7 @@ const LayoutWrapper = (props) => {
                   <Card className="contentStyle">
                     <p>Question: {current + 1}</p>
                     <p>{questionList[current].question}</p>
-                    <Form form={form} validateTrigger={["onChange"]}>
+                    <Form form={form}>
                       <Form.Item
                         name="answer"
                         label="Answer"
