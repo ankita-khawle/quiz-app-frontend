@@ -1,7 +1,4 @@
-import {
-  QUESTION_LIST_REQUEST,
-  QUESTION_LIST_RESPONSE,
-} from './quiz.type'
+import { QUESTION_LIST_REQUEST, QUESTION_LIST_RESPONSE } from './quiz.type'
 import axios from 'axios'
 
 export const questionListRequest = () => {
@@ -15,7 +12,6 @@ export const questionListResponse = (data) => {
     payload: data,
   }
 }
-
 
 export const getQuestions = () => (dispatch, getState) => {
   dispatch(questionListRequest())

@@ -2,7 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { memo } from 'react'
 import { Layout } from 'antd'
 import '../../style.scss'
-import { Row, Card, Col, Switch, Button, Input, Steps, message } from 'antd'
+import {
+  Row,
+  Card,
+  Col,
+  Switch,
+  Button,
+  Input,
+  Steps,
+  notification,
+} from 'antd'
 import { useSelector, useDispatch } from 'react-redux'
 import { getQuestions } from '../../redux/quiz/quiz.action'
 import { Form } from 'antd'
@@ -11,42 +20,31 @@ import sha1 from 'sha1'
 const { Content } = Layout
 
 const LayoutWrapper = (props) => {
-  // const { questionList } = useSelector((state) => state.quizReducer)
-  const questionList = [
-    {
-      answerSha1: '5c8452354c261b52e6dcf7f94b80ea5a7bceb677',
-      question:
-        "What do people mean when type the letters 'SMH' in a message on the internet?",
-    },
-    {
-      answerSha1: '088e4a2e6f0c20048cd3e53c639c7092bffb8524',
-      question:
-        "Which country's flag can be described as 'Green with a vertical white band on the left side. The green section contains a white crescent and star.'?",
-    },
-    {
-      answerSha1: 'b79445b10bd5bc34cbebf63355101dbdb420aa0e',
-      question: 'Which director directed Gangs of New York?',
-    },
-    {
-      answerSha1: 'fd26fb6ff5aa10eaddad0b2c832139dbe052c9d7',
-      question:
-        "Which philosopher famously said 'This is patently absurd; but whoever wishes to become a philosopher must learn not to be frightened by absurdities'?",
-    },
-    {
-      answerSha1: 'e8002c169040af08d8b4ed2f0d636b840f335f9b',
-      question: 'What is Xylology the study of?',
-    },
-  ]
-
+  const { questionList } = useSelector((state) => state.quizReducer)
   const dispatch = useDispatch()
   const [form] = Form.useForm()
   const [items, setItems] = useState([])
+  const [api, contextHolder] = notification.useNotification()
 
   const [attempts, setAttempts] = useState(3)
+  const [done, setDone] = useState(false)
   const [current, setCurrent] = useState(0)
   const [mode, setMode] = useState(0)
   const [score, setScore] = useState(0)
-
+  const openNotification = () => {
+    api.error({
+      message: 'Wrong Answer',
+      description: 'Try Again',
+      duration: 1,
+    })
+  }
+  const openNotificationRestart = () => {
+    api.info({
+      message: 'Time for a new Quiz',
+      description: '',
+      duration: 1,
+    })
+  }
   const next = () => {
     let str = sha1(form.getFieldValue('answer').toLowerCase())
     if (questionList[current].answerSha1 === str) {
@@ -55,43 +53,75 @@ const LayoutWrapper = (props) => {
       form.setFieldValue('answer', null)
     } else {
       if (attempts === 1) {
-        alert('Quiz Finished')
+        openNotificationRestart()
         setAttempts(0)
+        setDone(true)
       } else {
+        openNotification()
         setAttempts(attempts - 1)
       }
     }
   }
   const resetQuiz = () => {
-    // dispatch(getQuestions())
+    dispatch(getQuestions())
     setAttempts(3)
     setScore(0)
     setCurrent(0)
+    setDone(false)
+    form.setFieldValue('answer', null)
+  }
+  const finishQuiz = () => {
+    setDone(true)
   }
 
   const onModeChange = (data) => {
-    console.log(data)
     setMode(data ? 1 : 0)
   }
 
   useEffect(() => {
-    if (!questionList) {
-      // dispatch(getQuestions())
-    } else {
-      console.log(questionList)
+    dispatch(getQuestions())
+  }, [])
+
+  useEffect(() => {
+    if (questionList && questionList.length) {
       let buff = questionList.map((item) => ({
         key: item.title,
         title: item.title,
       }))
       setItems(buff)
     }
-    //questionList, dispatch, attempts
-  }, [])
-
+  }, [questionList])
   return (
     <Layout className="site-layout">
+      {contextHolder}
       <Content className={!mode ? 'content-light' : 'content-dark'}>
-        {attempts > 0 ? (
+        {done ? (
+          <Card className="base-card">
+            <Row>
+              <Col span={24}>
+                <p className="attempt">
+                  Attempts remaining: <span>{attempts}</span>{' '}
+                </p>
+              </Col>
+              <Col span={24}>
+                <p className="attempt">
+                  Your Score: <span>{score}</span>{' '}
+                </p>
+              </Col>
+              <Col span={10} />
+              <Col span={4}>
+                <Button
+                  type="primary"
+                  className="restartBtn"
+                  onClick={() => resetQuiz()}
+                >
+                  Restart
+                </Button>
+              </Col>
+              <Col span={10} />
+            </Row>
+          </Card>
+        ): (
           <Card className="base-card">
             <Row>
               <Col span={24}>
@@ -144,21 +174,14 @@ const LayoutWrapper = (props) => {
                     </Form>
                   </Card>
 
-                  <div
-                    style={{
-                      marginTop: 24,
-                    }}
-                  >
+                  <div className="btnBlockStyle">
                     {current < questionList.length - 1 && (
                       <Button type="primary" onClick={() => next()}>
                         Next
                       </Button>
                     )}
                     {current === questionList.length - 1 && (
-                      <Button
-                        type="primary"
-                        onClick={() => message.success('Processing complete!')}
-                      >
+                      <Button type="primary" onClick={() => finishQuiz()}>
                         Done
                       </Button>
                     )}
@@ -169,32 +192,6 @@ const LayoutWrapper = (props) => {
             ) : (
               'Questions not loaded.'
             )}
-          </Card>
-        ) : (
-          <Card className="base-card">
-            <Row>
-              <Col span={24}>
-                <p className="attempt">
-                  Attempts remaining: <span>{attempts}</span>{' '}
-                </p>
-              </Col>
-              <Col span={24}>
-                <p className="attempt">
-                  Your Score: <span>{score}</span>{' '}
-                </p>
-              </Col>
-              <Col span={10} />
-              <Col span={4}>
-                <Button
-                  type="primary"
-                  className="restartBtn"
-                  onClick={() => resetQuiz()}
-                >
-                  Restart
-                </Button>
-              </Col>
-              <Col span={10} />
-            </Row>
           </Card>
         )}
       </Content>
