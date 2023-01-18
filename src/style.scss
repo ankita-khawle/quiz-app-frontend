@@ -1,0 +1,93 @@
+.content-light{
+  .base-card{
+    background-color: #ffffff;
+    margin: 2rem;
+    p{
+      color: #101010;
+    }
+    .stepStyle{
+      color: #101010;
+    }
+    .contentStyle{
+      background-color: #ffffff;
+    }
+  }
+}
+.content-dark{
+  .base-card{
+    background-color: #434444;
+    margin: 2rem;
+    p{
+      color: #ffffff;
+    }
+    .stepStyle{
+      color: #ffffff;
+    }
+    .contentStyle{
+      background-color: #5a5a5a;
+    }
+  }
+  .ant-steps .ant-steps-item-process {
+    .ant-steps-item-icon {
+      background-color: #ffffff;
+      border-color: #ffffff;
+    }
+    .ant-steps-item-icon >.ant-steps-icon {
+      color: rgba(0, 0, 0, 0.65);
+    }
+  }
+  .ant-steps .ant-steps-item-wait {
+    .ant-steps-item-icon {
+      background-color: #5a5a5a;
+      border-color: #5a5a5a;
+    }
+    .ant-steps-item-icon >.ant-steps-icon {
+      color: #ffffff;
+    }
+  }
+  .ant-steps .ant-steps-item-process>.ant-steps-item-container>.ant-steps-item-content>.ant-steps-item-title::after {
+    background-color: #ffffff;
+  }
+  .ant-steps .ant-steps-item-wait>.ant-steps-item-container>.ant-steps-item-content>.ant-steps-item-title::after {
+    background-color: #ffffff;
+  }
+  .ant-form-item .ant-form-item-label >label {
+    color: #ffffff;
+  }
+}
+.attempt{
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mode{
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 300;
+  .switch{
+    float: right;
+  }
+}
+.contentStyle{
+  text-align: 'center';
+  color: 'black';
+  margin-top: 2rem;
+  width: 100%;
+  height: auto;
+
+}
+
+.stepStyle{
+  margin-top: 2rem;
+}
+.restartBtn {
+  width: 100%;
+}
+.score{
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+}
